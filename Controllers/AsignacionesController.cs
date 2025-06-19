@@ -15,14 +15,14 @@ namespace ApiExamen.Controllers
             _asignacionService = asignacionService;
         }
 
-        [HttpPost("asignar")]
+        [HttpPost("AsignarExamenAEmpleado")]
         public async Task<IActionResult> AsignarExamen([FromBody] Asignacion asignacion)
         {
             await _asignacionService.Asignar(asignacion);
             return Ok("Examen asignado");
         }
 
-        [HttpPost("listarPorEmpleado")]
+        [HttpPost("VisualizarAsignacionesPorEmpleado")]
         public async Task<IActionResult> ListarAsignacionesPorEmpleado([FromBody] Empleado empleado)
         {
             var asignaciones = await _asignacionService.ConsultarPorEmpleado(empleado.codigoEmpleado);

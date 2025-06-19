@@ -8,7 +8,7 @@ namespace ApiExamen.Services
     public class ResultadoService
     {
         private readonly string _connectionString;
-        
+
         public ResultadoService(IConfiguration config)
         {
             _connectionString = config.GetConnectionString("DefaultConnection")!;
@@ -17,8 +17,14 @@ namespace ApiExamen.Services
         public async Task GuardarRespuesta(RespuestaEmpleado r)
         {
             using var con = new SqlConnection(_connectionString);
-            await con.ExecuteAsync("spInsertarRespuestaEmpleado", r, commandType: CommandType.StoredProcedure);
+            await con.ExecuteAsync("spInsertarRespuestaEmpleado", new
+            {
+                r.idAsignacion,
+                r.idPregunta,
+                r.idRespuesta
+            }, commandType: CommandType.StoredProcedure);
         }
+
 
         public async Task<IEnumerable<ReportePromedioCompetencia>> ObtenerReporte(int idAsignacion)
         {

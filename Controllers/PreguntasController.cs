@@ -15,31 +15,32 @@ namespace ApiExamen.Controllers
             _preguntaService = preguntaService;
         }
 
-        [HttpPost("crear")]
+        [HttpPost("visualizarPreguntaPorExamen")]
+        public async Task<IActionResult> VisualizarPreguntasPorExamen([FromBody] Examen examen)
+        {
+            var preguntas = await _preguntaService.ConsultarPorExamen(examen.idExamen);
+            return Ok(preguntas);
+        }
+
+        [HttpPost("CrearPregunta")]
         public async Task<IActionResult> CrearPregunta([FromBody] Pregunta pregunta)
         {
             await _preguntaService.Crear(pregunta);
             return Ok("Pregunta creada");
         }
 
-        [HttpPost("listarPorExamen")]
-        public async Task<IActionResult> ListarPreguntasPorExamen([FromBody] Examen examen)
+        [HttpPost("ActualizarPregunta/{id}")]
+        public async Task<IActionResult> ActualizarPregunta(int id, [FromBody] Pregunta pregunta)
         {
-            var preguntas = await _preguntaService.ConsultarPorExamen(examen.idExamen);
-            return Ok(preguntas);
-        }
-
-        [HttpPost("actualizar")]
-        public async Task<IActionResult> ActualizarPregunta([FromBody] Pregunta pregunta)
-        {
+            pregunta.idPregunta = id;
             await _preguntaService.Actualizar(pregunta);
             return Ok("Pregunta actualizada");
         }
 
-        [HttpPost("eliminar")]
-        public async Task<IActionResult> EliminarPregunta([FromBody] Pregunta pregunta)
+        [HttpPost("EliminarPregunta/{id}")]
+        public async Task<IActionResult> EliminarPregunta(int id)
         {
-            await _preguntaService.Eliminar(pregunta.idPregunta);
+            await _preguntaService.Eliminar(id);
             return Ok("Pregunta eliminada");
         }
     }

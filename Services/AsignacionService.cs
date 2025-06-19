@@ -8,7 +8,7 @@ namespace ApiExamen.Services
     public class AsignacionService
     {
         private readonly string _connectionString;
-        
+
         public AsignacionService(IConfiguration config)
         {
             _connectionString = config.GetConnectionString("DefaultConnection")!;
@@ -17,7 +17,12 @@ namespace ApiExamen.Services
         public async Task Asignar(Asignacion a)
         {
             using var con = new SqlConnection(_connectionString);
-            await con.ExecuteAsync("spAsignarExamen", a, commandType: CommandType.StoredProcedure);
+            await con.ExecuteAsync("spAsignarExamen", new
+            {
+                a.idExamen,
+                a.codigoEmpleado
+            }, commandType: CommandType.StoredProcedure);
+
         }
 
         public async Task<IEnumerable<Asignacion>> ConsultarPorEmpleado(int codigoEmpleado)

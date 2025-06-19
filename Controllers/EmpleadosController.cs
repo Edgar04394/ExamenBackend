@@ -15,33 +15,33 @@ namespace ApiExamen.Controllers
             _empleadoService = empleadoService;
         }
 
-        [HttpPost("crear")]
+        [HttpPost("visualizarEmpleado")]
+        public async Task<IActionResult> VisualizarEmpleados()
+        {
+            var empleados = await _empleadoService.Consultar();
+            return Ok(empleados);
+        }
+
+        [HttpPost("CrearEmpleado")]
         public async Task<IActionResult> CrearEmpleado([FromBody] Empleado empleado)
         {
             await _empleadoService.Crear(empleado); // ← nombre correcto
             return Ok("Empleado creado");
         }
 
-        [HttpPost("listar")]
-        public async Task<IActionResult> ListarEmpleados()
+        [HttpPost("ActualizarEmpleado/{id}")]
+        public async Task<IActionResult> ActualizarEmpleado(int id, [FromBody] Empleado empleado)
         {
-            var empleados = await _empleadoService.Consultar(); // ← nombre correcto
-            return Ok(empleados);
-        }
-
-        [HttpPost("actualizar")]
-        public async Task<IActionResult> ActualizarEmpleado([FromBody] Empleado empleado)
-        {
-            await _empleadoService.Actualizar(empleado); // ← nombre correcto
+            empleado.codigoEmpleado = id;
+            await _empleadoService.Actualizar(empleado);
             return Ok("Empleado actualizado");
         }
 
-        [HttpPost("eliminar")]
-        public async Task<IActionResult> EliminarEmpleado([FromBody] Empleado empleado)
+        [HttpPost("EliminarEmpleado/{id}")]
+        public async Task<IActionResult> EliminarEmpleado(int id)
         {
-            await _empleadoService.Eliminar(empleado.codigoEmpleado); // ← nombre correcto
+            await _empleadoService.Eliminar(id);
             return Ok("Empleado eliminado");
         }
-
     }
 }

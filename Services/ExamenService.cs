@@ -22,14 +22,22 @@ namespace ApiExamen.Services
         public async Task Crear(Examen examen)
         {
             using var con = new SqlConnection(_connectionString);
-            await con.ExecuteAsync("spInsertarExamen", examen, commandType: CommandType.StoredProcedure);
+            var parametros = new
+            {
+                titulo = examen.titulo,
+                descripcion = examen.descripcion
+            };
+
+            await con.ExecuteAsync("spInsertarExamen", parametros, commandType: CommandType.StoredProcedure);
         }
+
 
         public async Task Actualizar(Examen examen)
         {
             using var con = new SqlConnection(_connectionString);
             await con.ExecuteAsync("spActualizarExamen", examen, commandType: CommandType.StoredProcedure);
         }
+
 
         public async Task Eliminar(int idExamen)
         {

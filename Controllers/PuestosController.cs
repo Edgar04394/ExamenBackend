@@ -15,31 +15,32 @@ namespace ApiExamen.Controllers
             _puestoService = puestoService;
         }
 
-        [HttpPost("crear")]
+        [HttpPost("visualizarPuesto")]
+        public async Task<IActionResult> VisualizarPuestos()
+        {
+            var puestos = await _puestoService.Consultar();
+            return Ok(puestos);
+        }
+
+        [HttpPost("CrearPuesto")]
         public async Task<IActionResult> CrearPuesto([FromBody] Puesto puesto)
         {
             await _puestoService.Crear(puesto);
             return Ok("Puesto creado");
         }
 
-        [HttpPost("listar")]
-        public async Task<IActionResult> ListarPuestos()
+        [HttpPost("ActualizarPuesto/{id}")]
+        public async Task<IActionResult> ActualizarPuesto(int id, [FromBody] Puesto puesto)
         {
-            var puestos = await _puestoService.Consultar();
-            return Ok(puestos);
-        }
-
-        [HttpPost("actualizar")]
-        public async Task<IActionResult> ActualizarPuesto([FromBody] Puesto puesto)
-        {
+            puesto.idPuesto = id;
             await _puestoService.Actualizar(puesto);
             return Ok("Puesto actualizado");
         }
 
-        [HttpPost("eliminar")]
-        public async Task<IActionResult> EliminarPuesto([FromBody] Puesto puesto)
+        [HttpPost("EliminarPuesto/{id}")]
+        public async Task<IActionResult> EliminarPuesto(int id)
         {
-            await _puestoService.Eliminar(puesto.idPuesto);
+            await _puestoService.Eliminar(id);
             return Ok("Puesto eliminado");
         }
     }

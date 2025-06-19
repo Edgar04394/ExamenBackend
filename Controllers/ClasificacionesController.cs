@@ -15,31 +15,32 @@ namespace ApiExamen.Controllers
             _clasificacionService = clasificacionService;
         }
 
-        [HttpPost("crear")]
+        [HttpPost("VisualizarClasificacion")]
+        public async Task<IActionResult> VisualizarClasificaciones()
+        {
+            var clasificaciones = await _clasificacionService.Consultar();
+            return Ok(clasificaciones);
+        }
+
+        [HttpPost("CrearClasificacion")]
         public async Task<IActionResult> CrearClasificacion([FromBody] Clasificacion clasificacion)
         {
             await _clasificacionService.Crear(clasificacion);
             return Ok("Clasificación creada");
         }
 
-        [HttpPost("listar")]
-        public async Task<IActionResult> ListarClasificaciones()
+        [HttpPost("ActualizarClasificacion/{id}")]
+        public async Task<IActionResult> ActualizarClasificacion(int id, [FromBody] Clasificacion clasificacion)
         {
-            var clasificaciones = await _clasificacionService.Consultar();
-            return Ok(clasificaciones);
-        }
-
-        [HttpPost("actualizar")]
-        public async Task<IActionResult> ActualizarClasificacion([FromBody] Clasificacion clasificacion)
-        {
+            clasificacion.idClasificacion = id;
             await _clasificacionService.Actualizar(clasificacion);
             return Ok("Clasificación actualizada");
         }
 
-        [HttpPost("eliminar")]
-        public async Task<IActionResult> EliminarClasificacion([FromBody] Clasificacion clasificacion)
+        [HttpPost("EliminarClasificacion/{id}")]
+        public async Task<IActionResult> EliminarClasificacion(int id)
         {
-            await _clasificacionService.Eliminar(clasificacion.idClasificacion);
+            await _clasificacionService.Eliminar(id);
             return Ok("Clasificación eliminada");
         }
     }

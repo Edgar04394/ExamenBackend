@@ -15,31 +15,32 @@ namespace ApiExamen.Controllers
             _examenService = examenService;
         }
 
-        [HttpPost("crear")]
+        [HttpPost("VisualizarExamen")]
+        public async Task<IActionResult> VisualizarExamenes()
+        {
+            var examenes = await _examenService.Consultar();
+            return Ok(examenes);
+        }
+
+        [HttpPost("CrearExamen")]
         public async Task<IActionResult> CrearExamen([FromBody] Examen examen)
         {
             await _examenService.Crear(examen);
             return Ok("Examen creado");
         }
 
-        [HttpPost("listar")]
-        public async Task<IActionResult> ListarExamenes()
+        [HttpPost("ActualizarExamen/{id}")]
+        public async Task<IActionResult> ActualizarExamen(int id, [FromBody] Examen examen)
         {
-            var examenes = await _examenService.Consultar();
-            return Ok(examenes);
-        }
-
-        [HttpPost("actualizar")]
-        public async Task<IActionResult> ActualizarExamen([FromBody] Examen examen)
-        {
+            examen.idExamen = id;
             await _examenService.Actualizar(examen);
             return Ok("Examen actualizado");
         }
 
-        [HttpPost("eliminar")]
-        public async Task<IActionResult> EliminarExamen([FromBody] Examen examen)
+        [HttpPost("EliminarExamen/{id}")]
+        public async Task<IActionResult> EliminarExamen(int id)
         {
-            await _examenService.Eliminar(examen.idExamen);
+            await _examenService.Eliminar(id);
             return Ok("Examen eliminado");
         }
     }
