@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using ApiExamen.Models;
 using ApiExamen.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiExamen.Controllers
 {
@@ -15,16 +16,27 @@ namespace ApiExamen.Controllers
             _authService = authService;
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            // Pasa el parámetro request al método Login, ¡es obligatorio!
             var usuario = await _authService.Login(request);
 
             if (usuario == null)
                 return Unauthorized("Credenciales incorrectas");
 
-            return Ok(usuario);
+            var token = _authService.GenerarToken(usuario);
+
+            return Ok(new
+            {
+                token,
+                usuario = new
+                {
+                    usuario.idUsuario,
+                    usuario.usuario,
+                    usuario.rol
+                }
+            });
         }
     }
 }
