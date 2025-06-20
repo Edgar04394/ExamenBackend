@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace ApiExamen.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Administrador")]
     [ApiController]
     [Route("api/[controller]")]
     public class PuestosController : ControllerBase

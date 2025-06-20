@@ -1,10 +1,9 @@
 using Dapper;
 using Microsoft.Data.SqlClient;
 using ApiExamen.Models;
-
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
 namespace ApiExamen.Services
@@ -20,35 +19,34 @@ namespace ApiExamen.Services
             _config = config;
         }
 
-        public async Task<Usuario?> Login(LoginRequest request)
+        public async Task<string?> Login(LoginRequest request)
         {
             using var con = new SqlConnection(_connectionString);
             var sql = "SELECT * FROM Usuarios WHERE usuario = @usuario AND contrasena = @contrasena";
-            return await con.QueryFirstOrDefaultAsync<Usuario>(sql, new
+            var usuario = await con.QueryFirstOrDefaultAsync<Usuario>(sql, new
             {
                 usuario = request.Usuario,
                 contrasena = request.Contrasena
             });
-        }
 
-        public string GenerarToken(Usuario usuario)
-        {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+            if (usuario == null) return null;
+
+            // Generar token JWT con el rol
+            var jwtSettings = _config.GetSection("Jwt");
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtSettings["Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[]
+            var claims = new List<Claim>
             {
-            new Claim(JwtRegisteredClaimNames.Sub, usuario.usuario!),
-            new Claim("id", usuario.idUsuario.ToString()),
-            new Claim("rol", usuario.rol ?? "Empleado"),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
+                new Claim(ClaimTypes.Name, usuario.usuario!),
+                new Claim(ClaimTypes.Role, usuario.rol!) // Aquí va el rol
+            };
 
             var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
+                issuer: jwtSettings["Issuer"],
+                audience: jwtSettings["Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(int.Parse(_config["Jwt:ExpireMinutes"]!)),
+                expires: DateTime.UtcNow.AddHours(2),
                 signingCredentials: creds
             );
 

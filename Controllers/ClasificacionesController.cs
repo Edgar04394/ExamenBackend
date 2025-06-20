@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using ApiExamen.Models;
 using ApiExamen.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiExamen.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     [ApiController]
     [Route("api/[controller]")]
     public class ClasificacionesController : ControllerBase

@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using ApiExamen.Models;
 using ApiExamen.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ApiExamen.Controllers
 {
+    [Authorize(Roles = "Administrador, Empleado")]
     [ApiController]
     [Route("api/[controller]")]
     public class ExamenesController : ControllerBase
@@ -15,6 +17,7 @@ namespace ApiExamen.Controllers
             _examenService = examenService;
         }
 
+        [Authorize(Roles = "Administrador, Empleado")]
         [HttpPost("VisualizarExamen")]
         public async Task<IActionResult> VisualizarExamenes()
         {
@@ -22,6 +25,7 @@ namespace ApiExamen.Controllers
             return Ok(examenes);
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpPost("CrearExamen")]
         public async Task<IActionResult> CrearExamen([FromBody] Examen examen)
         {
@@ -29,6 +33,7 @@ namespace ApiExamen.Controllers
             return Ok("Examen creado");
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpPost("ActualizarExamen/{id}")]
         public async Task<IActionResult> ActualizarExamen(int id, [FromBody] Examen examen)
         {
@@ -37,6 +42,7 @@ namespace ApiExamen.Controllers
             return Ok("Examen actualizado");
         }
 
+        [Authorize(Roles = "Administrador")]
         [HttpPost("EliminarExamen/{id}")]
         public async Task<IActionResult> EliminarExamen(int id)
         {

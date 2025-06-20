@@ -8,7 +8,7 @@ namespace ApiExamen.Services
     public class ClasificacionService
     {
         private readonly string _connectionString;
-        
+
         public ClasificacionService(IConfiguration config)
         {
             _connectionString = config.GetConnectionString("DefaultConnection")!;
@@ -23,13 +23,13 @@ namespace ApiExamen.Services
         public async Task Crear(Clasificacion c)
         {
             using var con = new SqlConnection(_connectionString);
-            await con.ExecuteAsync("spInsertarClasificacion", new { c.nombre }, commandType: CommandType.StoredProcedure);
+            await con.ExecuteAsync("spInsertarClasificacion", new { c.nombre, c.color }, commandType: CommandType.StoredProcedure);
         }
 
         public async Task Actualizar(Clasificacion c)
         {
             using var con = new SqlConnection(_connectionString);
-            await con.ExecuteAsync("spActualizarClasificacion", c, commandType: CommandType.StoredProcedure);
+            await con.ExecuteAsync("spActualizarClasificacion", new { c.idClasificacion, c.nombre, c.color }, commandType: CommandType.StoredProcedure);
         }
 
         public async Task Eliminar(int idClasificacion)
